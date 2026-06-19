@@ -17,6 +17,9 @@ const Navbar = () => {
           <Link to="/explore" className="text-gray-400 hover:text-white transition-colors duration-200">
             Explore
           </Link>
+          <Link to="/calculator" className="text-gray-400 hover:text-white transition-colors duration-200">
+            Calculator
+          </Link>
           <a href="#compare" className="text-gray-400 hover:text-white transition-colors duration-200">
             Compare
           </a>
