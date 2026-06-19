@@ -5,6 +5,7 @@ import FilterSidebar from '../components/explore/FilterSidebar';
 import SearchBar from '../components/explore/SearchBar';
 import SortDropdown from '../components/explore/SortDropdown';
 import EVGrid from '../components/explore/EVGrid';
+import AIAdvisorPanel from '../components/explore/AIAdvisorPanel';
 import vehicleData from '../data/vehicles.json';
 
 const Explore = () => {
@@ -132,6 +133,10 @@ const Explore = () => {
                 vehicles={filteredVehicles} 
                 compareList={compareList}
                 toggleCompare={toggleCompare}
+              />
+
+              <AIAdvisorPanel 
+                vehicles={filteredVehicles.slice(0, 5)}
               />
             </div>
           </div>
