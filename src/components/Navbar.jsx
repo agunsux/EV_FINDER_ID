@@ -1,46 +1,45 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import { Zap } from 'lucide-react';
 
-const Navbar = () => {
+export default function Navbar() {
+  const location = useLocation();
+
+  const links = [
+    { name: 'Home', path: '/' },
+    { name: 'Vehicles', path: '/vehicles' },
+    { name: 'AI Advisor', path: '/advisor' },
+    { name: 'Compare', path: '/compare' },
+  ];
+
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-dark-bg/80 backdrop-blur-md border-b border-white/5 transition-all duration-300">
-      <div className="max-w-[1200px] mx-auto px-6 h-16 md:h-20 flex items-center justify-between">
-        {/* Logo */}
-        <div className="flex items-center">
-          <Link to="/" className="text-xl font-semibold tracking-tight text-white">
-            EV Finder
+    <nav className="sticky top-0 z-50 bg-[#0A0A0A]/80 backdrop-blur-md border-b border-white/10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          <Link to="/" className="flex items-center gap-2">
+            <Zap className="w-6 h-6 text-blue-500" />
+            <span className="text-xl font-semibold tracking-tight text-white">EV Finder <span className="text-blue-500">ID</span></span>
           </Link>
-        </div>
-
-        {/* Navigation Links */}
-        <div className="hidden md:flex items-center gap-8 text-sm font-medium">
-          <Link to="/explore" className="text-gray-400 hover:text-white transition-colors duration-200">
-            Explore
-          </Link>
-          <Link to="/calculator" className="text-gray-400 hover:text-white transition-colors duration-200">
-            Calculator
-          </Link>
-          <a href="#compare" className="text-gray-400 hover:text-white transition-colors duration-200">
-            Compare
-          </a>
-          <a href="#about" className="text-gray-400 hover:text-white transition-colors duration-200">
-            About
-          </a>
-        </div>
-
-        {/* Mobile menu */}
-        <div className="md:hidden flex items-center">
-          <button className="text-gray-400 hover:text-white focus:outline-none">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="3" y1="12" x2="21" y2="12"></line>
-              <line x1="3" y1="6" x2="21" y2="6"></line>
-              <line x1="3" y1="18" x2="21" y2="18"></line>
-            </svg>
-          </button>
+          <div className="hidden md:flex items-center space-x-8">
+            {links.map((link) => (
+              <Link
+                key={link.name}
+                to={link.path}
+                className={`text-sm font-medium transition-colors ${
+                  location.pathname === link.path
+                    ? 'text-white'
+                    : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                {link.name}
+              </Link>
+            ))}
+          </div>
+          <div className="md:hidden">
+            {/* Mobile menu button could go here */}
+          </div>
         </div>
       </div>
     </nav>
   );
-};
-
-export default Navbar;
+}
