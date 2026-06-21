@@ -58,6 +58,8 @@ export default function Advisor() {
         usage: userMsg
       };
 
+      console.log('[DEBUG] Advisor Payload:', payload);
+
       const response = await fetchAdvisor(payload);
       
       let finalResult = response;
@@ -73,10 +75,10 @@ export default function Advisor() {
       }]);
 
     } catch (error) {
-      console.error(error);
+      console.error("Advisor Error:", error);
       setMessages(prev => [...prev, { 
         role: 'assistant', 
-        content: 'Advisor sedang sibuk, coba lagi' 
+        content: 'AI Advisor sedang mengalami gangguan. Silakan coba lagi.' 
       }]);
     } finally {
       setLoading(false);

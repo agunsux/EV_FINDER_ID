@@ -60,7 +60,7 @@ OUTPUT FORMAT (Valid JSON ONLY, no other text):
 `;
 
     const message = await anthropic.messages.create({
-      model: "claude-haiku-4-5-20251001",
+      model: "claude-3-5-haiku-latest",
       max_tokens: 1024,
       temperature: 0.2,
       system: "You are an expert AI EV Consultant. You return valid JSON only. Do not wrap in markdown tags.",
@@ -79,9 +79,13 @@ OUTPUT FORMAT (Valid JSON ONLY, no other text):
 
     const aiResult = JSON.parse(jsonString.trim());
     
-    res.status(200).json(aiResult);
+    res.status(200).json({ success: true, data: aiResult });
   } catch (error) {
     console.error('API Error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ 
+      success: false, 
+      error: 'Terjadi kesalahan saat menghubungi AI Advisor. Silakan coba lagi.',
+      debug: error.message 
+    });
   }
 }

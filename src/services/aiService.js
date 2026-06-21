@@ -12,11 +12,20 @@ export async function fetchAdvisor(payload) {
 
     clearTimeout(timeoutId);
 
+    console.log('[DEBUG] AI Service Response Status:', res.status);
+
     if (!res.ok) {
-      throw new Error(`API Error: ${res.status}`);
+      const errorData = await res.json().catch(() => ({}));
+      throw new Error(errorData.error || `API Error: ${res.status}`);
     }
 
-    return await res.json();
+    const json = await res.json();
+    if (!json.success) {
+      console.error('[DEBUG] Backend error details:', json.debug);
+      throw new Error(json.error || 'AI Advisor Error');
+    }
+
+    return json.data;
   } catch (error) {
     clearTimeout(timeoutId);
     if (error.name === 'AbortError') {
