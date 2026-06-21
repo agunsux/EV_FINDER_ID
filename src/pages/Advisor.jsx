@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { fetchAdvisor } from '../services/api';
+import { fetchAdvisor } from '../services/aiService';
+import { validateAdvisorResponse, getFallbackResponse } from '../utils/advisorValidator';
 import { Sparkles, Send, Bot, User, AlertTriangle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -59,10 +60,15 @@ export default function Advisor() {
 
       const response = await fetchAdvisor(payload);
       
-      setStructuredResult(response);
+      let finalResult = response;
+      if (!validateAdvisorResponse(response)) {
+        finalResult = getFallbackResponse();
+      }
+
+      setStructuredResult(finalResult);
       setMessages(prev => [...prev, { 
         role: 'assistant', 
-        content: response.summary,
+        content: finalResult.summary,
         isStructured: true
       }]);
 
@@ -70,7 +76,7 @@ export default function Advisor() {
       console.error(error);
       setMessages(prev => [...prev, { 
         role: 'assistant', 
-        content: 'Maaf, terjadi kesalahan saat menghubungi AI Advisor. Silakan coba lagi.' 
+        content: 'Advisor sedang sibuk, coba lagi' 
       }]);
     } finally {
       setLoading(false);
@@ -111,7 +117,19 @@ export default function Advisor() {
                       <div key={rIdx} className="bg-[#0A0A0A] rounded-xl p-4 border border-white/5">
                         <div className="flex justify-between items-center mb-3">
                           <h5 className="font-bold text-lg text-blue-400">{rIdx + 1}. {rec.model}</h5>
+                          {rec.score && (
+                            <span className="bg-blue-600/20 text-blue-400 text-xs px-2 py-1 rounded-full border border-blue-500/30">
+                              Score: {rec.score}/100
+                            </span>
+                          )}
                         </div>
+                        
+                        {(rec.price || rec.range) && (
+                          <div className="flex gap-4 mb-3 text-sm text-gray-300">
+                            {rec.price && <div><span className="text-gray-500">Harga:</span> {rec.price}</div>}
+                            {rec.range && <div><span className="text-gray-500">Jarak:</span> {rec.range}</div>}
+                          </div>
+                        )}
                         
                         <div className="space-y-2 mb-3">
                           {rec.why && rec.why.map((reason, i) => (
@@ -134,7 +152,9 @@ export default function Advisor() {
                         )}
                         
                         <div className="mt-4 pt-3 border-t border-white/5 text-right">
-                           <Link to="/vehicles" className="text-xs text-blue-500 hover:text-blue-400">Lihat Detail di Database &rarr;</Link>
+                           <Link to="/vehicles" className="inline-block bg-blue-600 hover:bg-blue-500 text-white text-xs px-4 py-2 rounded transition-colors">
+                             Lihat Detail Mobil &rarr;
+                           </Link>
                         </div>
                       </div>
                     ))}
@@ -171,10 +191,13 @@ export default function Advisor() {
               <div className="w-10 h-10 rounded-full bg-blue-600/20 flex items-center justify-center shrink-0 border border-blue-500/30">
                 <Bot className="w-5 h-5 text-blue-400" />
               </div>
-              <div className="bg-[#1a1a1a] border border-white/5 rounded-2xl rounded-tl-sm p-5 flex items-center gap-2">
-                <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
-                <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+              <div className="bg-[#1a1a1a] border border-white/5 rounded-2xl rounded-tl-sm p-5 flex flex-col gap-2">
+                <p className="text-sm text-gray-300">AI sedang menganalisa EV terbaik...</p>
+                <div className="flex items-center gap-2 mt-1">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
+                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+                </div>
               </div>
             </div>
           )}

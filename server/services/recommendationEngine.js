@@ -119,12 +119,11 @@ export function getRecommendations(userProfile) {
       warnings.push(`Layanan purna jual ${vehicle.brand} sedang dalam tahap ekspansi.`);
     }
 
-    // Calculate total
     score = (
       budgetScore * 0.30 +
-      rangeScore * 0.25 +
+      rangeScore * 0.20 +
       usageScore * 0.20 +
-      chargingScore * 0.15 +
+      chargingScore * 0.20 +
       serviceScore * 0.10
     );
 
@@ -139,8 +138,8 @@ export function getRecommendations(userProfile) {
   // Sort by highest score
   const sorted = scoredVehicles.sort((a, b) => b.score - a.score);
   
-  // Return Top 3
-  return sorted.slice(0, 3);
+  // Return Top 10
+  return sorted.slice(0, 10);
 }
 
 export function getAllVehicles() {
